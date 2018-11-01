@@ -1,5 +1,5 @@
 var express = require('express');
-
+var beer = require('./lib/beers');
 var app = express();
 
 var handlebars = require('express-handlebars').create({ defaultLayout: 'main'});
@@ -11,12 +11,12 @@ app.set('port', process.env.PORT || 3001);
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', (req, res) => {
-  res.render('home');
+  res.render('home', {props: JSON.stringify(req.headers)});
 });
 
 app.get('/about', (req, res) => {
-  var randBeer = beers[Math.floor(Math.random()*beers.length)];
-  res.render('about', { beers : randBeer });
+  res.render('about', { beers : beer.getBeer() });
+  console.log(req.acceptsLanguages);
 });
 
 
@@ -34,10 +34,3 @@ app.use((err, req, res, next) => {
 app.listen(app.get('port'), () => {
   console.log('Express run on http://localhost: ' + app.get('port') + ': press Ctrl+C  to stop');
 });
-
-var beers =[
-  "Non Alcoholic",
-  "Whise beer",
-  "Lager beer",
-  "Dark beer"
-];
